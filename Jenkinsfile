@@ -7,7 +7,7 @@ def readProb;
 	    stage('Setup'){
 	    steps {
 	        script {
-	        readProb = readProperties  file:'testconfig.properties'
+	        readProb = readProperties  file:'jenkinproperties'
 	        FAILED_STAGE=env.STAGE_NAME
 	        Setup= "${readProb['Setup']}"
 			if ("$Setup" == "yes") {
