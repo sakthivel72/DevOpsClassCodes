@@ -2,7 +2,7 @@ user.name=sakthivel72
 Project_name=TestCodeBase
 branch=${GIT_BRANCH}
 credentials=jenkins
-GITHUB_URL=git@github.com:awstrainingwithus/Private_Repo.git
+GITHUB_URL=https://github.com/sakthivel72/DevOpsClassCodes.git
 Recipient=sakthivel72@hotmail.com
 PMD_result=report
 #The below are the stages in the pipieline
