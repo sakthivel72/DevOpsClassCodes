@@ -10,6 +10,7 @@ pipeline {
             steps {
                 
                 echo 'test'
+                bat "mvn clean "
             }
         }
         stage('Pull from a specific branch') {
@@ -25,15 +26,20 @@ pipeline {
                 env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
                         parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', 
                                      description: 'What is the release scope?')]
-            }
+            
             echo "${env.RELEASE_SCOPE}"
+            if (env.RELEASE_SCOPE == 'patch') {
+            bat "mvn clean package" }
+            else {
+            echo 'else' } }
+            
             }
         }
          stage('Deploy the packageDeploy') {
             steps {
                 
                  echo 'mvn package'
-                 bat "mvn clean package"
+                 bat "mvn clean install"
                    }
 		}	
              stage('Slack notification') {
