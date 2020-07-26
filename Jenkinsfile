@@ -1,38 +1,46 @@
-def readProb;
-		
-	def FAILED_STAGE
-	pipeline {
-	agent any
-	stages {
-	    stage('Setup'){
-	    steps {
-	        script {
-	        readProb = readProperties  file:'jenkinproperties'
-	        FAILED_STAGE=env.STAGE_NAME
-	        Setup= "${readProb['Setup']}"
-			if ("$Setup" == "yes") {
-		 sh "git config --global user.email asakthivel72@hotmail.com"
-	        sh "git config --global user.name ${readProb['user.name']}"
-	        sh 'git config --global credential.helper cache'
-	        sh 'git config --global credential.helper cache'
-	        sh "if [ -d ${readProb['Project_name']} ]; then rm -Rf ${readProb['Project_name']}; fi"
-	        sh "if [ -d ${readProb['PMD_result']} ]; then rm -Rf ${readProb['PMD_result']};  fi"        
-	        sh "mkdir ${readProb['PMD_result']}"
-			}
-			else {
-			 echo "Skipped stage"
-			}
-			}
-		}
-		}
-		
-	stage('Git Pull'){
-        steps {	dir("${readProb['Project_name']}"){
-		 git branch: "${readProb['branch']}", credentialsId: "${readProb['credentials']}", url: "${readProb['GITHUB_URL']}"    
-	      }
-		}
-		}
-		
-		
-		}
-	}
+pipeline {
+    agent any
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "mymaven"
+		jdk "jdk1.8.0_251"
+    }
+    stages {
+        stage('Remove the CodeBase folder') {
+            steps {
+                
+                echo 'test'
+            }
+        }
+        stage('Pull from a specific branch') {
+            steps {
+                
+                git branch: 'Test', credentialsId: 'gut8SqLEVbG4EPbktuygUjeo', url: 'https://github.com/sakthivel72/DevOpsClassCodes.git'
+            }
+        }
+        stage('Compile and unit test using Maven') {
+            steps {
+               
+              script {
+                env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                        parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', 
+                                     description: 'What is the release scope?')]
+            }
+            echo "${env.RELEASE_SCOPE}"
+            }
+        }
+         stage('Deploy the packageDeploy') {
+            steps {
+                
+                 echo 'mvn package'
+                 bat "mvn clean package"
+                   }
+		}	
+             stage('Slack notification') {
+            steps {
+                 slackSend channel: 'jenkin', message: 'job completed ', tokenCredentialId: 'jenkins'
+            }
+        
+        }
+    }
+}
