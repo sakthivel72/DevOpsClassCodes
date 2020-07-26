@@ -9,7 +9,10 @@ pipeline {
         stage('Remove the CodeBase folder') {
             steps {
                 
-                 bat "mvn clean "
+                 echo "${env.BUILD_NUMBER}"
+    
+                echo 'test'
+                bat "mvn clean "
             }
         }
         stage('Pull from a specific branch') {
@@ -30,15 +33,13 @@ pipeline {
             if (env.RELEASE_SCOPE == 'patch') {
             bat "mvn clean package" }
             else {
-            echo 'else' } }
-            
+            error "stoping here"  } }
             }
         }
          stage('Deploy the packageDeploy') {
             steps {
                 
-                 echo 'mvn package'
-                 bat "mvn clean install"
+                    bat "mvn clean install"
                    }
 		}	
              stage('Slack notification') {
