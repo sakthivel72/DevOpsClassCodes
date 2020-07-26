@@ -9,8 +9,7 @@ pipeline {
         stage('Remove the CodeBase folder') {
             steps {
                 
-                echo 'test'
-                bat "mvn clean "
+                 bat "mvn clean "
             }
         }
         stage('Pull from a specific branch') {
